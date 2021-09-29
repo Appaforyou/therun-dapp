@@ -136,16 +136,30 @@ function MyVerticallyCenteredModal(props) {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="customModalBody">
-                    <div className="modalCard" onClick={() => {
-                    }}>
-                        <p>MetaMask</p>
-                        <img
-                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/2048px-MetaMask_Fox.svg.png"/>
-                    </div>
+                    <Card title="MetaMask" imageSrc="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/2048px-MetaMask_Fox.svg.png" />
+                    <Spacer />
+                    <Card title="WalletConnect" imageSrc="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/2048px-MetaMask_Fox.svg.png" />
                 </Modal.Body>
             </Modal>
         </>
     );
+}
+
+const Spacer = () => {
+    return (
+      <div className="spacer" />
+    )
+}
+
+const Card = ({title, imageSrc}) => {
+    return (
+      <div className="modalCard" onClick={() => {
+      }}>
+          <p>{title}</p>
+          <img
+            src={imageSrc} />
+      </div>
+    )
 }
 
 const GlobalStyles = createGlobalStyle`
@@ -212,5 +226,10 @@ const GlobalStyles = createGlobalStyle`
     font-weight: 400;
     color: rgb(255, 255, 255);
     margin: 0;
+  }
+  
+  .spacer {
+      display: flex;
+      height: 8px;
   }
 `
