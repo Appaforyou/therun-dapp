@@ -104,11 +104,8 @@ function App() {
   return (
     <>
       <GlobalStyles/>
-      <Container>
-        {network !== '' && (<p>Network: {network}</p>)}
-        {account !== '' && (<p>Your accounts: {account}</p>)}
-        {balance !== '' && (<p>Your balance: {balance}</p>)}
-        {status !== '' && (<p>Status: {status}</p>)}
+      <Container className="app">
+        <div className="bigSpacer"></div>
         <ModalWallets
           show={modalShow}
           onHide={() => setModalShow(false)}
@@ -116,6 +113,12 @@ function App() {
           loadBlockchainData={loadBlockchainData}
         />
         <Swap onClick={() => setModalShow(true)}/>
+        {network !== '' && (<p className="text-white">Network: {network}</p>)}
+        {account !== '' && (<p className="text-white">Your accounts: {account}</p>)}
+        {balance !== '' && (<p className="text-white">Your balance: {balance}</p>)}
+        {status !== '' && (<p className="text-white">Status: {status}</p>)}
+        <div className="bigSpacer"></div>
+        <div className="bigSpacer"></div>
       </Container>
     </>
   )

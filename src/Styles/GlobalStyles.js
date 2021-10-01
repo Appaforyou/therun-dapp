@@ -1,6 +1,17 @@
 import {createGlobalStyle} from "styled-components";
 
 export const GlobalStyles = createGlobalStyle`
+  .app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(rgb(44, 37, 45), rgb(34, 36, 41));
+  }
+  
+  .bigSpacer {
+    height: 160px;
+  }
+  
   .customModal {
     width: 430px;
     border-radius: 20px;
