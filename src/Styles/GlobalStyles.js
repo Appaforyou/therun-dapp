@@ -70,8 +70,13 @@ export const GlobalStyles = createGlobalStyle`
     display: flex;
     height: 8px;
   }
+  
+  .smallSpacer {
+    height: 4px;
+  }
 
   .swap {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: end;
@@ -91,6 +96,10 @@ export const GlobalStyles = createGlobalStyle`
     background-color: rgb(33, 36, 41);
     border: 1px solid rgba(45, 47, 53);
     border-radius: 20px;
+  }
+  
+  .swapCard:hover {
+    border: 1px solid rgba(65, 68, 78);
   }
   
   .connectWalletButton {
@@ -137,5 +146,31 @@ export const GlobalStyles = createGlobalStyle`
   .swapSettings {
     width: 24px;
     height: 24px;
+  }
+  
+  .swapButton {
+    position: absolute;
+    bottom: 138px;
+    width: 32px;
+    height: 32px;
+    background-color: rgb(44, 47, 54);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 4px solid rgb(25, 27, 31);
+    border-radius: 12px;
+  }
+  
+  .swapButton:hover {
+    cursor: pointer;
+    background-color: rgb(44, 47, 54, 0.85);
+    border: 4px solid rgb(25, 27, 31, 0.85);
+
+
+  }
+  
+  .swapButtonImage {
+    width: 16px;
+    height: 16px;
   }
 `

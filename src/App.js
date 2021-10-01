@@ -6,7 +6,7 @@ import QRCodeModal from "@walletconnect/qrcode-modal";
 import {Container} from "react-bootstrap";
 import {ModalWallets} from "./Components/ModalWallets";
 import {GlobalStyles} from "./Styles/GlobalStyles";
-import {Spacer} from "./Components/Spacer";
+import {SmallSpacer, Spacer} from "./Components/Spacer";
 
 function App() {
   const [account, setAccount] = useState('');
@@ -123,12 +123,21 @@ function App() {
 const Swap = ({onClick}) => {
   return (
     <div className="swap">
+      <SwapButton />
       <SwapHeader />
       <SwapCard/>
-      <Spacer/>
+      <SmallSpacer />
       <SwapCard/>
       <Spacer/>
       <ConnectWalletButton onClick={onClick}/>
+    </div>
+  )
+}
+
+const SwapButton = () => {
+  return (
+    <div className="swapButton">
+      <img className="swapButtonImage" src="https://assets.website-files.com/5eb07b7b6cc525d375ebb3d4/5eb07b7b6cc525c103ebb480_download%20(1).svg"/>
     </div>
   )
 }
