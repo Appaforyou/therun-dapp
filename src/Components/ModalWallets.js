@@ -1,6 +1,7 @@
 import {Modal} from "react-bootstrap";
 import {Card} from "./Card";
 import {Spacer} from "./Spacer";
+import {ethers} from "ethers";
 
 export function ModalWallets(props) {
   return (
@@ -22,13 +23,14 @@ export function ModalWallets(props) {
                 imageSrc="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/2048px-MetaMask_Fox.svg.png"
                 description="Easy-to-use browser extension"
                 onClick={() => {
-                    // window.ethereum.send('eth_requestAccounts');
-                    // props.loadBlockchainData(props.metaMaskProvider);
+                  if (window.ethereum) {
+                    // TODO: await window.ethereum.send('eth_requestAccounts');
+                  }
                 }}
           />
           <Spacer/>
           <Card title="WalletConnect"
-                imageSrc="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/2048px-MetaMask_Fox.svg.png"
+                imageSrc="https://gblobscdn.gitbook.com/spaces%2F-LJJeCjcLrr53DcT1Ml7%2Favatar.png?alt=media"
                 onClick={props.walletConnect}/>
         </Modal.Body>
       </Modal>

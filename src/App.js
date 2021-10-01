@@ -3,15 +3,15 @@ import {ethers} from "ethers";
 
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "@walletconnect/qrcode-modal";
-import {Button, Container, Modal} from "react-bootstrap";
+import {Container} from "react-bootstrap";
 import {ModalWallets} from "./Components/ModalWallets";
 import {GlobalStyles} from "./Styles/GlobalStyles";
+import {Spacer} from "./Components/Spacer";
 
 function App() {
   const [account, setAccount] = useState('');
   const [network, setNetwork] = useState('');
   const [balance, setBalance] = useState('');
-  const [chainId, setChainId] = useState('');
   const [status, setStatus] = useState('');
 
   const [modalShow, setModalShow] = useState(false);
@@ -45,7 +45,6 @@ function App() {
       console.log('connectEvent');
       console.log('accounts, chainId');
       setAccount(accounts[0]);
-      setChainId(chainId);
       console.log(payload.params);
 
     });
@@ -59,7 +58,6 @@ function App() {
       const {accounts, chainId} = payload.params[0];
       console.log('sessionUpdateEvent');
       setAccount(accounts[0]);
-      setChainId(chainId);
     });
 
     connector.on("disconnect", (error, payload) => {
@@ -67,56 +65,94 @@ function App() {
         throw error;
       }
       setAccount('');
-      setChainId('');
       console.log('disconnectEvent');
 
       // Delete connector
     });
   }
 
+  function setState(accountState, networkState, balanceState) {
+    setAccount(accountState);
+    setNetwork(networkState);
+    setBalance(balanceState);
+  }
 
   async function loadBlockchainData(provider) {
     await window.ethereum.send('eth_requestAccounts');
     const signer = provider.getSigner();
     const address = await signer.getAddress();
 
+    setState(address, (await provider.getNetwork()).name, (await provider.getBalance(address)).toString())
+
     window.ethereum.on('accountsChanged', accounts => {
-      setAccount(accounts[0] ?? '');
+      if (accounts[0]) {
+        setState(accounts[0], (provider.getNetwork()).name, (provider.getBalance(address)).toString());
+      } else {
+        setState('', '', '');
+      }
     });
-    setAccount(address);
-    setNetwork((await provider.getNetwork()).name);
-    setBalance((await provider.getBalance(address)).toString());
   }
 
-    useEffect(() => {
-        if (window.ethereum) {
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-            loadBlockchainData(provider);
-            return provider.removeAllListeners();
-        }
-    }, [])
+  useEffect(() => {
+    if (window.ethereum) {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      loadBlockchainData(provider);
+    }
+  }, [])
 
   return (
     <>
       <GlobalStyles/>
       <Container>
-        <h1>Hello</h1>
         {network !== '' && (<p>Network: {network}</p>)}
         {account !== '' && (<p>Your accounts: {account}</p>)}
         {balance !== '' && (<p>Your balance: {balance}</p>)}
         {status !== '' && (<p>Status: {status}</p>)}
-        {chainId !== '' && (<p>ChainId: {chainId}</p>)}
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          Подключить кошелек
-        </Button>
         <ModalWallets
           show={modalShow}
           onHide={() => setModalShow(false)}
           walletConnect={walletConnect}
           loadBlockchainData={loadBlockchainData}
         />
+        <Swap onClick={() => setModalShow(true)}/>
       </Container>
     </>
+  )
+}
+
+const Swap = ({onClick}) => {
+  return (
+    <div className="swap">
+      <SwapHeader />
+      <SwapCard/>
+      <Spacer/>
+      <SwapCard/>
+      <Spacer/>
+      <ConnectWalletButton onClick={onClick}/>
+    </div>
+  )
+}
+
+const SwapHeader = () => {
+  return (
+    <div className="swapHeader">
+      <p className="swapText">Обменять</p>
+      <img className="swapSettings" src="https://cpng.pikpng.com/pngl/s/526-5265469_clip-art-png-download.png"></img>
+    </div>
+  )
+}
+
+const SwapCard = () => {
+  return (
+    <div className="swapCard"></div>
+  )
+}
+
+const ConnectWalletButton = ({onClick}) => {
+  return (
+    <div className="connectWalletButton" onClick={onClick}>
+      <p className="connectWalletText">Подключить кошелек</p>
+    </div>
   )
 }
 
