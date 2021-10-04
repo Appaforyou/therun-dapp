@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {ethers} from "ethers";
 
 import WalletConnect from "@walletconnect/client";
@@ -6,14 +6,12 @@ import QRCodeModal from "@walletconnect/qrcode-modal";
 import {Container} from "react-bootstrap";
 import {ModalWallets} from "./Components/ModalWallets";
 import {GlobalStyles} from "./Styles/GlobalStyles";
-import {SmallSpacer, Spacer} from "./Components/Spacer";
 import {Swap} from "./Components/Swap";
 
 function App() {
   const [account, setAccount] = useState('');
   const [network, setNetwork] = useState('');
   const [balance, setBalance] = useState('');
-  const [status, setStatus] = useState('');
 
   const [modalShow, setModalShow] = useState(false);
 
@@ -42,7 +40,7 @@ function App() {
       }
 
       // Get provided accounts and chainId
-      const {accounts, chainId} = payload.params[0];
+      const {accounts} = payload.params[0];
       console.log('connectEvent');
       console.log('accounts, chainId');
       setAccount(accounts[0]);
@@ -56,7 +54,7 @@ function App() {
       }
 
       // Get updated accounts and chainId
-      const {accounts, chainId} = payload.params[0];
+      const {accounts} = payload.params[0];
       console.log('sessionUpdateEvent');
       setAccount(accounts[0]);
     });
@@ -72,34 +70,30 @@ function App() {
     });
   }
 
-  function setState(accountState, networkState, balanceState) {
-    setAccount(accountState);
-    setNetwork(networkState);
-    setBalance(balanceState);
-  }
-
-  async function loadBlockchainData(provider) {
-    await window.ethereum.send('eth_requestAccounts');
-    const signer = provider.getSigner();
-    const address = await signer.getAddress();
-
-    setState(address, (await provider.getNetwork()).name, (await provider.getBalance(address)).toString())
-
-    window.ethereum.on('accountsChanged', accounts => {
-      if (accounts[0]) {
-        setState(accounts[0], (provider.getNetwork()).name, (provider.getBalance(address)).toString());
-      } else {
-        setState('', '', '');
-      }
-    });
-  }
-
-  useEffect(() => {
+  async function metamaskConnect() {
     if (window.ethereum) {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
-      loadBlockchainData(provider);
+      await window.ethereum.send('eth_requestAccounts');
+      const signer = provider.getSigner();
+      const address = await signer.getAddress();
+
+      setAccount(address);
+      setNetwork((await provider.getNetwork()).name);
+      setBalance((await provider.getBalance(address)).toString());
+
+      window.ethereum.on('accountsChanged', accounts => {
+        if (accounts[0]) {
+          setAccount(accounts[0]);
+          setNetwork((provider.getNetwork()).name);
+          setBalance((provider.getBalance(address)).toString());
+        } else {
+          setAccount('');
+          setNetwork('');
+          setBalance('');
+        }
+      });
     }
-  }, [])
+  }
 
   return (
     <>
@@ -110,13 +104,12 @@ function App() {
           show={modalShow}
           onHide={() => setModalShow(false)}
           walletConnect={walletConnect}
-          loadBlockchainData={loadBlockchainData}
+          metamaskConnect={metamaskConnect}
         />
         <Swap onClick={() => setModalShow(true)}/>
         {network !== '' && (<p className="text-white">Network: {network}</p>)}
         {account !== '' && (<p className="text-white">Your accounts: {account}</p>)}
         {balance !== '' && (<p className="text-white">Your balance: {balance}</p>)}
-        {status !== '' && (<p className="text-white">Status: {status}</p>)}
         <div className="bigSpacer"></div>
         <div className="bigSpacer"></div>
       </Container>
